@@ -19,7 +19,7 @@ Next.js + TypeScript + Tailwind CSS + ESLint + Prettier + Husky + lint-staged �
 
 ### A. CNA 방식
 ```bash
-npx create-next-app@latest my-app -e <this gitHub>
+npx create-next-app@latest my-app -e https://github.com/kim10914/create-next-template
 cd my-app
 npx husky init // husky 세팅(git init 이슈 해결)
 ```
