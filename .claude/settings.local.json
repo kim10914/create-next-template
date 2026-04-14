@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"C:\\\\Users\\\\김성환\\\\Desktop\\\\포폴페이지\\\\mypage\" && node --experimental-vm-modules node_modules/husky/bin.js init 2>&1)",
+      "Bash(where npm 2>&1 && npm --version 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\김성환\\\\Desktop\\\\포폴페이지\\\\mypage\" && npm run prepare 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\김성환\\\\Desktop\\\\포폴페이지\\\\mypage\" && cmd /c \"node_modules\\\\.bin\\\\husky.cmd init\" 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\김성환\\\\Desktop\\\\포폴페이지\\\\mypage\" && node -e \"\nconst fs = require\\('fs'\\);\nfs.mkdirSync\\('.husky', { recursive: true }\\);\nfs.writeFileSync\\('.husky/pre-commit', 'npx lint-staged\\\\n'\\);\nconsole.log\\('done'\\);\n\" 2>&1)"
+    ]
+  }
+}

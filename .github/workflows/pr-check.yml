@@ -1,0 +1,52 @@
+# 속도와 비용 최적화된 프론트엔드 CI 체크 워크플로우
+name: Frontend CI Check
+
+on:
+  pull_request:
+    branches: ["main"]
+
+# 중복 실행 취소 (Concurrency)
+# PR에 새 커밋을 푸시하면, 이전 커밋으로 돌고 있던 불필요한 CI를 자동 취소해서 비용과 시간을 아낌.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          # npm 의존성 캐싱 -> CI 속도 향상(npm i 를 할 때, 변경된 패키지만 설치)
+          cache: "npm" 
+
+      # Next.js 빌드 캐싱 (.next/cache)
+      # 이걸 해야 Next.js가 변경된 페이지만 빌드해서 CI 속도가 비약적으로 빨라진다.
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+
+      - name: Install dependencies
+        run: npm ci
+
+      # 실무에서는 lint와 tsc(타입 검사)를 분리하거나 동시에 실행시킴
+      - name: Check Lint & Types
+        run: |
+          npm run lint
+          # package.json에 "typecheck": "tsc --noEmit" 스크립트가 있어야 함
+          npm run typecheck 
+
+      - name: Build Next.js
+        run: npm run build
